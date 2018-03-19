@@ -1,6 +1,11 @@
 class V1::ContactsController < ApplicationController
   def index
     contacts = Contact.all 
+    search_terms = params[:q]
+
+    if search_terms
+      contacts = contacts.where("first_name ILIKE ? OR last_name ILIKE ?", "%#{search_terms}%", "%#{search_terms}%") 
+    end
     render json: contacts.as_json
   end
 
