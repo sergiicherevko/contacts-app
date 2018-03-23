@@ -1,10 +1,50 @@
-# • Expand your search to make all other attributes searchable in your Contact model.
-
-
 require "unirest"
-
+#Authentication
 system "clear"
 
+puts "[signup] Signup"
+puts "[login] Log In"
+puts "[logout] Log Out"
+
+user_input = gets.chomp
+
+if 
+  user_input == "signup"
+  response = Unirest.post(
+    "http://localhost:3000/v1/users",
+    parameters: {
+      name: "Kate",
+      email: "kate@email.com",
+      password: "password",
+      password_confirmation: "password"
+    }
+  )
+  user = response.body
+  p user
+elsif 
+  user_input == "login"
+  response = Unirest.post(
+    "http://localhost:3000/user_token",
+    parameters: {
+      auth: {
+        email: "sergii@email.com",
+        password: "password"
+      }
+    }
+  )
+  jwt = response.body["jwt"]
+  Unirest.default_header("Authorization", "Bearer #{jwt}")
+  p "You logged in. Your jwt: #{jwt}"
+elsif 
+  user_input == "logout"
+  jwt = ""
+  Unirest.clear_default_headers()
+
+  p "You logged out. Your jwt: #{jwt}"
+end
+
+# system "clear"
+# Application
 puts "Welcome to your contact app! Choose an option:"
 puts "[1] See all contacts"
 puts "  [1.1] Search contact by name"
